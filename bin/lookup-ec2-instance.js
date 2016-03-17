@@ -3,7 +3,7 @@
  * lookup-ec2-instance.js
  * Project: aws
  * Description:
- * Creator: Justin Doyle <jdoyle@donjohnston.com>
+ * Creator: Justin Doyle <justin@jmdoyle.com>
  * Date: 1/14/2016
  */
 module.exports = (function () {

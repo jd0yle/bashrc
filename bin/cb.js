@@ -4,7 +4,7 @@
  * Copies the text provided by stdin while SSHed into a remote host to local host's clipboard
  * Project: .prompt
  * Description:
- * Creator: Justin Doyle <jdoyle@donjohnston.com>
+ * Creator: Justin Doyle <justin@jmdoyle.com>
  * Date: 12/16/2015
  */
 

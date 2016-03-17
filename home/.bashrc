@@ -1,6 +1,8 @@
-# ~/.bashrc: executed by bash(1) for non-login shells.
-# see /usr/share/doc/bash/examples/startup-files (in the package bash-doc)
-# for examples
+# .bashrc
+# Project: .prompt
+# Description: ...? Its a .bashrc file... http://lmgtfy.com/?q=.bashrc
+# Creator: Justin Doyle <justin@jmdoyle.com>
+# Date: 2/9/2013
 
 #########################
 ## SET DEFAULT OPTIONS ##

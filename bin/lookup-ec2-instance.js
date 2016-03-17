@@ -1,8 +1,8 @@
 #!/usr/bin/env node
 /**
  * lookup-ec2-instance.js
- * Project: aws
- * Description:
+ * Project: .prompt
+ * Description: Lookup the public IP address of an ec2 instance given the instance's name
  * Creator: Justin Doyle <justin@jmdoyle.com>
  * Date: 1/14/2016
  */

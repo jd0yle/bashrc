@@ -1,0 +1,11 @@
+{
+    "name": "prompt",
+    "description": "Collection of utilities and configurations intended to be carried along via ssh",
+    "version": "0.0.3",
+    "main": "home/.bashrc",
+    "dependencies": {
+        "aws-sdk": "^2.2.29",
+        "chalk": "^1.1.1",
+        "commander": "^2.9.0"
+    }
+}

@@ -1,0 +1,13 @@
+#!/usr/bin/env bash
+instanceName=$1
+ipAddress=$(~/.prompt/bin/lookup-ec2-instance.js -n $instanceName)
+keyName=$(~/.prompt/bin/lookup-ec2-instance.js -k -n $instanceName | sed -r 's/\.pub//g')
+sshUser="$USER"
+
+if [[ "$keyName" = "default-user@all-ec2" ]]; then
+    sshUser="ubuntu"
+fi
+
+rsync -ae "ssh -i $HOME/.ssh/$keyName" --delete ~/.prompt $sshUser@$ipAddress:~/
+ssh -i $HOME/.ssh/$keyName $sshUser@$ipAddress "bash ~/.prompt/setup-host"
+ssh -i $HOME/.ssh/$keyName -t $sshUser@$ipAddress "bash --rcfile ~/.bashrc"

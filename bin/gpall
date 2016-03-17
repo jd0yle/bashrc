@@ -1,0 +1,30 @@
+# gpall.sh
+# Project: .prompt
+# Description:
+# Creator: Justin Doyle <jdoyle@donjohnston.com>
+# Date: 12/16/2015
+#!/usr/bin/env bash
+
+git fetch --all &> /dev/null
+
+currbranch=`git branch | grep "\*" | sed -r 's/.*\* (\S+)/\1/g'`
+remotes=`git branch -r | grep -v ">" | sed 's/origin\///g'`
+locals=`git branch -l`
+
+for remote in `git branch -r | grep -v ">" | sed 's/origin\///g'`
+do
+    if [[ `echo $locals | grep "$remote"` == "" ]]; then
+        echo " * $remote -> origin/$remote created"
+        git checkout -b $remote origin/$remote &> /dev/null
+    fi
+done
+
+branches=`git for-each-ref --format="%(refname:short) %(upstream:track)" refs/heads | grep -oP "^.*\[.*"  | sed 's/\[.*\]//g'`
+for branch in ${branches}
+do
+    echo -e " * Getting remote changes for $branch"
+    git checkout $branch &> /dev/null
+    git pull --ff-only
+done
+
+git checkout $currbranch &> /dev/null

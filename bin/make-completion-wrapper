@@ -1,0 +1,51 @@
+#!/bin/sh
+# Author.: Ole J
+# Date...: 23.03.2008
+# License: Whatever
+
+# Wraps a completion function
+# make-completion-wrapper <actual completion function> <name of new func.> <alias>
+#                         <command name> <list supplied arguments>
+# eg.
+# 	alias agi='apt-get install'
+# 	make-completion-wrapper _apt_get _apt_get_install apt-get install
+# defines a function called _apt_get_install (that's $2) that will complete
+# the 'agi' alias. (complete -F _apt_get_install agi)
+#
+#make-completion-wrapper _git_checkout _git_checkout_shortcut go git checkout
+function make-completion-wrapper () {
+	local comp_function_name="$1"
+	local function_name="$2"
+	local alias_name="$3"
+	local arg_count=$(($#-4))
+	shift 3
+	local args="$*"
+	local function="
+    function $function_name {
+        COMP_LINE=\"$@\${COMP_LINE#$alias_name}\"
+        let COMP_POINT+=$((${#args}-${#alias_name}))
+        ((COMP_CWORD+=$arg_count))
+        COMP_WORDS=("$@" \"\${COMP_WORDS[@]:1}\")
+
+        local cur words cword prev
+        _get_comp_words_by_ref -n =: cur words cword prev
+        "$comp_function_name"
+        return 0
+    }"
+	eval "$function"
+#	echo $function_name
+#	echo "$function"
+}
+__git_shortcut () {
+# Because cherry-pick has the function _git_cherry_pick
+n2=${2//-/_}
+    type _git_${n2}_shortcut &>/dev/null || make-completion-wrapper _git_$n2 _git_${n2}_shortcut $1 git $2
+    complete -o bashdefault -o default -o nospace -F _git_${n2}_shortcut $1
+}
+
+__apt_cache_shortcut () {
+    type _apt_cache_$2_shortcut &>/dev/null || make-completion-wrapper _apt_cache _apt_cache_$2_shortcut $1 apt-cache $2
+    # is not executed automatically. Normally only on first apt-cache <tab>
+    [ ! -f /usr/share/bash-completion/completions/apt-cache ] || source /usr/share/bash-completion/completions/apt-cache
+    complete -F _apt_cache_$2_shortcut $1
+}

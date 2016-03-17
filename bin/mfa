@@ -1,0 +1,74 @@
+#!/usr/bin/env node
+(function () {
+    "use strict";
+    var exec = require("child_process").exec,
+        providers = require("../etc/credentials/mfa.json");
+
+    var getTimeLeft = function() {
+        var sec = parseInt(new Date().getSeconds(), 10),
+            timeLeft = Math.abs(sec - (Math.floor(((sec / 30)) + 1) * 30));
+        return timeLeft;
+    };
+
+    var output = function () {
+        var timeLeft = getTimeLeft(),
+            line = " " + timeLeft + " ";
+
+        if (timeLeft.toString().length < 2){
+            line = " " + line;
+        }
+
+        for (var provider in providers) {
+            if (providers.hasOwnProperty(provider)) {
+                line += "  *  " + provider + ": " + providers[provider].lastToken;
+            }
+        }
+
+        process.stdout.clearLine();
+        process.stdout.cursorTo(0);
+        process.stdout.write(line)
+        process.stdout.cursorTo(process.stdout.columns);
+    };
+
+    var execOathTool = function (provider, callback) {
+        callback = typeof callback === "function" ? callback : function () {};
+        exec("oathtool --totp -b '" + providers[provider].secret + "'", function (err, stdout) {
+            if (err) {
+                throw(err);
+            }
+            callback(provider, stdout.replace(/\n/gi, ""));
+        });
+    };
+
+    var saveToken = function (provider, token) {
+        if (token !== providers[provider].lastToken) {
+            providers[provider].lastToken = token;
+        }
+    };
+
+    var getToken = function (provider) {
+        execOathTool(provider, saveToken);
+    };
+
+    var createIntervals = function (provider) {
+        getToken(provider);
+        setInterval(function () {
+            getToken(provider);
+        }, 1000);
+    };
+
+   // exec("sudo ntpdate ntp.ubuntu.com", function (err) {
+    exec("ls", function (err) {
+        if (err) {
+            throw(err);
+        }
+        for (var provider in providers) {
+            if (providers.hasOwnProperty(provider)) {
+                createIntervals(provider);
+            }
+        }
+        output();
+        setInterval(output, 500);
+    });
+})();
+//oathtool --totp -b "3OBBPQISBSMVAJ34XLGJLJEJG63UH4PHMHKQ6XYORI5UGSQRJF7LOXVBXEGFUKOE"

@@ -1,0 +1,19 @@
+# setup-host.sh
+# Project: .prompt
+# Description: Copy the files from .prompt/home to $HOME
+# (This will backup the files in $HOME before copying)
+# Creator: Justin Doyle <jdoyle@donjohnston.com>
+# Date: 12/16/2015
+#!/usr/bin/env bash
+
+for f in $(ls -a ~/.prompt/home); do
+  if [[ "$f" != "." && "$f" != ".." ]]; then
+    if [[ -f ~/$f.orig ]]; then
+       mv ~/$f ~/$f.bak &> /dev/null
+    else
+       mv ~/$f ~/$f.orig &> /dev/null
+    fi
+    ln -s  ~/.prompt/home/$f ~/$f
+  fi
+done
+

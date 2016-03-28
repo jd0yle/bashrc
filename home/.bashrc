@@ -11,6 +11,16 @@ export CLICOLOR=1
 # If not running interactively, don't do anything
 [ -z "$PS1" ] && return
 
+##########################
+# UTILITY FUNCTIONS
+##########################
+function consoleLog(){
+    if shopt -q login_shell; then
+       echo "$@"
+    fi
+}
+
+
 HISTCONTROL=ignoreboth:erasedups
 shopt -s histappend
 HISTSIZE=10000
@@ -88,14 +98,6 @@ HOST_IP=$(ifconfig eth1 2>/dev/null | grep -o "inet addr:[0-9]*\.[0-9]*\.[0-9]*\
           ifconfig eth0 2>/dev/null | grep -o "inet addr:[0-9]*\.[0-9]*\.[0-9]*\.[0-9]*" | grep -o "[0-9]*\.[0-9]*\.[0-9]*\.[0-9]*" ||
           ifconfig en3 2>/dev/null | grep -o "inet [0-9]*\.[0-9]*\.[0-9]*\.[0-9]*" | grep -o "[0-9]*\.[0-9]*\.[0-9]*\.[0-9]*")
 
-##########################
-# UTILITY FUNCTIONS
-##########################
-function consoleLog(){
-    if shopt -q login_shell; then
-       echo "$@"
-    fi
-}
 
 ##########################
 # SOURCE LIQUIDPROMP AND SET MOTD

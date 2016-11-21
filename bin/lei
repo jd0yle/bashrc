@@ -1,0 +1,154 @@
+#!/usr/bin/env node
+/**
+ * lookup-ec2-instance.js
+ * Project: .prompt
+ * Description: Lookup the public IP address of an ec2 instance given the instance's name
+ * Creator: Justin Doyle <justin@jmdoyle.com>
+ * Date: 1/14/2016
+ */
+module.exports = (function () {
+    "use strict";
+    /**************************************************************************
+     * V A R I A B L E S
+     ***************************************************************************/
+    var commander = require("commander"),
+        AWS = require("aws-sdk");
+    var that = {},
+        ec2;
+
+    AWS.config.loadFromPath(process.env.HOME + "/.prompt/etc/credentials/aws.json");
+
+    ec2 = new AWS.EC2();
+
+    var parseArgs = function () {
+        /*commander
+         .version(require(process.env.HOME + "/.prompt/package.json").version)
+         .option("-n, --name <name>", "EC2 Instance name", false)
+         .option("-k, --key", "Retrieve the ssh key used for the instance")
+         .parse(process.argv);
+         */
+        commander
+            .version(require(process.env.HOME + "/.prompt/package.json").version)
+            .arguments("<hostname>")
+            .action(function (hostname) {
+                commander.name = hostname;
+                that.init();
+            })
+            .parse(process.argv);
+
+        if (!commander.name || commander.name === "") {
+            commander.help();
+        }
+    };
+
+    that.getIpAddress = function (instanceName, callback) {
+        callback = typeof callback === "function" ? callback : function () {};
+        var params = {
+            Filters: [
+                {
+                    Name: "tag-value",
+                    Values: [instanceName]
+                }
+            ]
+        };
+        ec2.describeInstances(params, function (err, data) {
+            var ipAddress,
+                trimmedInstanceName = instanceName.replace(/^(\w+-\w+).*$/, "$1");
+            if (err) {
+                throw(err);
+            }
+            // console.log(JSON.stringify(data, null, 4));
+            if (data &&
+                data.Reservations &&
+                data.Instances &&
+                data.Instances.length > 0) {
+                ipAddress = data
+                    .Reservations[0]
+                    .Instances[0]
+                    .PublicIpAddress;
+            }
+
+            if (ipAddress === undefined) {
+                ec2.describeInstances({}, function (err, data) {
+                    if (err) {throw(err);}
+                    data.Reservations.forEach(function (reservation) {
+                        reservation.Instances.forEach(function (instance) {
+                            instance.Tags.forEach(function (tag) {
+                                if (tag.Key === "Name" &&
+                                    tag.Value.replace(/^(\w+-\w+).*$/, "$1") === trimmedInstanceName) {
+                                    instance.NetworkInterfaces.forEach(function (inet) {
+                                        if (ipAddress === undefined) {
+                                            ipAddress = [];
+                                        }
+                                        ipAddress.push({
+                                            name: tag.Value,
+                                            ip: inet.Association.PublicIp
+                                        });
+
+                                    });
+                                }
+                            });
+
+                        });
+                    });
+                    if (ipAddress !== undefined && ipAddress.length < 2) {
+                        callback(ipAddress[0].ip);
+                    } else {
+                        callback(JSON.stringify(ipAddress, null, 4));
+
+                    }
+
+                });
+            } else {
+                callback(ipAddress);
+            }
+        });
+    };
+
+    that.getKeyName = function (instanceName, callback) {
+        callback = typeof callback === "function" ? callback : function () {};
+        var params = {
+            Filters: [
+                {
+                    Name: "tag-value",
+                    Values: [instanceName]
+                }
+            ]
+        };
+        ec2.describeInstances(params, function (err, data) {
+            var keyName;
+            if (err) {
+                throw(err);
+            }
+            // console.log(JSON.stringify(data, null, 4));
+            keyName = data
+                .Reservations[0]
+                .Instances[0]
+                .KeyName;
+
+            callback(keyName);
+        });
+    };
+
+    that.init = function () {
+        if (require.main === module) {
+            // Script was called directly from command line, so send the repos to stdout
+            // parseArgs();
+            if (commander.key) {
+                that.getKeyName(commander.name, function (keyName) {
+                    console.log(keyName); // eslint-disable-line no-console
+                });
+            } else {
+                that.getIpAddress(commander.name, function (ipAddress) {
+                    console.log(ipAddress); // eslint-disable-line no-console
+                });
+            }
+        } else {
+            // If the script was required by another script as a module,
+            // make sure we return the object to the requiring script
+            return that;
+        }
+    };
+
+    parseArgs();
+})();

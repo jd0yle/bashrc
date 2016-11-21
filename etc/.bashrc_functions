@@ -6,16 +6,19 @@ function sshrun(){
     else
         #rsync -ae ssh ~/.bashrc ~/.prompt $1:~/
         rsync -ae ssh --delete ~/.prompt $1:~/
-        ssh -X $1 "bash ~/.prompt/setup-host"
-        ssh -X -t $1 "bash --rcfile ~/.bashrc"
+        ssh -Y $1 "bash ~/.prompt/setup-host"
+        ssh -Y -t $1 "bash --rcfile ~/.prompt/home/.bashrc"
     fi
 }
- alias ssh=sshrun
+alias ssh=sshrun
 
 # TODO Use ~/.ssh/config!
 function sshaws(){
+    echo "Syncing .prompt files"
     rsync -ae "ssh -i $HOME/.ssh/default-user@all-ec2" --delete ~/.prompt ubuntu@$1:~/
+    echo "Setting .bashrc"
     ssh -i $HOME/.ssh/default-user@all-ec2 ubuntu@$1 'rm -f /home/ubuntu/.bashrc; ln -s /home/ubuntu/.prompt/home/.bashrc /home/ubuntu/.bashrc'
+    echo "Connecting"
     ssh -i $HOME/.ssh/default-user@all-ec2 ubuntu@$1
 }
 
@@ -42,13 +45,11 @@ function gclone(){
     git clone git@bitbucket.org:$team/$repo.git
 }
 
-function on_bash_exit(){
-    if [[ -f $HOME/.bashrc.bak ]]; then
-      mv $HOME/.bashrc.bak $HOME/.bashrc
+
+function du {
+    if [[ `uname` != "Darwin" ]]; then
+        du -h --max-depth=1 $@
+    else
+        du -hc -d 1 $@
     fi
-}
-
-function pstorm(){
-    /usr/local/bin/phpstorm/bin/phpstorm.sh $@ > /dev/null 2>&1 &
-
 }

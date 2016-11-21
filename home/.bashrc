@@ -14,11 +14,11 @@ export CLICOLOR=1
 ##########################
 # UTILITY FUNCTIONS
 ##########################
-function consoleLog(){
-    if shopt -q login_shell; then
-       echo "$@"
-    fi
-}
+#function echo(){
+#    if shopt -q login_shell; then
+#       echo "$@"
+#    fi
+#}
 
 
 HISTCONTROL=ignoreboth:erasedups
@@ -64,7 +64,7 @@ esac
 
 # Add an "alert" alias for long running commands.  Use like so:
 #   sleep 10; alert
-alias alert='notify-send --urgency=low -i "$([ $? = 0 ] && consoleLog terminal || consoleLog error)" "$(history|tail -n1|sed -e '\''s/^\s*[0-9]\+\s*//;s/[;&|]\s*alert$//'\'')"'
+alias alert='notify-send --urgency=low -i "$([ $? = 0 ] && echo terminal || echo error)" "$(history|tail -n1|sed -e '\''s/^\s*[0-9]\+\s*//;s/[;&|]\s*alert$//'\'')"'
 
 # Alias definitions.
 if [ -f ~/.bash_aliases ]; then
@@ -93,7 +93,7 @@ if [ -f /etc/bash_completion ] && ! shopt -oq posix; then
 fi
 
 
-CLIENT_IP=$(consoleLog $SSH_CLIENT | grep -o '[0-9]*\.[0-9]*\.[0-9]*\.[0-9]*')
+CLIENT_IP=$(echo $SSH_CLIENT | grep -o '[0-9]*\.[0-9]*\.[0-9]*\.[0-9]*')
 HOST_IP=$(ifconfig eth1 2>/dev/null | grep -o "inet addr:[0-9]*\.[0-9]*\.[0-9]*\.[0-9]*" | grep -o "[0-9]*\.[0-9]*\.[0-9]*\.[0-9]*" ||
           ifconfig eth0 2>/dev/null | grep -o "inet addr:[0-9]*\.[0-9]*\.[0-9]*\.[0-9]*" | grep -o "[0-9]*\.[0-9]*\.[0-9]*\.[0-9]*" ||
           ifconfig en3 2>/dev/null | grep -o "inet [0-9]*\.[0-9]*\.[0-9]*\.[0-9]*" | grep -o "[0-9]*\.[0-9]*\.[0-9]*\.[0-9]*")
@@ -121,7 +121,7 @@ function motd()
         # OpenBSD
         ti_setaf () { tput AF "$1" ; }
     else
-        consoleLog "liquidprompt: terminal $TERM not supported" >&2
+        echo "liquidprompt: terminal $TERM not supported" >&2
         ti_setaf () { : ; }
     fi
 
@@ -134,27 +134,28 @@ function motd()
     DISK_FREE=$(df -h | head -n 2 | tail -n 1 | sed -r 's/\s+/ /g' | cut -d " " -f 4)
 
     # MOTD and login message
-    consoleLog -e "$(ti_setaf 5)Welcome to ${ti_bold}$(ti_setaf 6)$HOSTNAME$(ti_setaf 5) (${ti_sgr0}$(ti_setaf 6)$HOST_IP$(ti_setaf 5)${ti_bold}), $(ti_setaf 6)$USER$(ti_setaf 5) (${ti_sgr0}$(ti_setaf 6)$CLIENT_IP$(ti_setaf 5)${ti_bold}).${ti_sgr0}"
-    consoleLog -en "$(ti_setaf 5)Current server time is $(ti_setaf 3)$(date)$(ti_setaf 5).${ti_sgr0}\n"
-    consoleLog -en "$(ti_setaf 6)Mem: $(ti_setaf 3)${MEM_USED}m$(ti_setaf 5)/$(ti_setaf 3)${MEM_TOTAL}m $(ti_setaf 5)Used, $(ti_setaf 3)${MEM_FREE}m$(ti_setaf 5) Free. "
-    consoleLog -e "$(ti_setaf 6)Disk: $(ti_setaf 3)${DISK_USED}$(ti_setaf 5)/$(ti_setaf 3)${DISK_TOTAL} $(ti_setaf 5)Used, $(ti_setaf 3)${DISK_FREE}$(ti_setaf 5) Free."
+    echo ""
+    echo -e "$(ti_setaf 5)Welcome to ${ti_bold}$(ti_setaf 6)$HOSTNAME$(ti_setaf 5) (${ti_sgr0}$(ti_setaf 6)$HOST_IP$(ti_setaf 5)${ti_bold}), $(ti_setaf 6)$USER$(ti_setaf 5) (${ti_sgr0}$(ti_setaf 6)$CLIENT_IP$(ti_setaf 5)${ti_bold}).${ti_sgr0}"
+    echo -en "$(ti_setaf 5)Current server time is $(ti_setaf 3)$(date)$(ti_setaf 5).${ti_sgr0}\n"
+    echo -en "$(ti_setaf 6)Mem: $(ti_setaf 3)${MEM_USED}m$(ti_setaf 5)/$(ti_setaf 3)${MEM_TOTAL}m $(ti_setaf 5)Used, $(ti_setaf 3)${MEM_FREE}m$(ti_setaf 5) Free. "
+    echo -e "$(ti_setaf 6)Disk: $(ti_setaf 3)${DISK_USED}$(ti_setaf 5)/$(ti_setaf 3)${DISK_TOTAL} $(ti_setaf 5)Used, $(ti_setaf 3)${DISK_FREE}$(ti_setaf 5) Free."
 
     function _exit()              # Function to run upon exit of shell.
     {
-        consoleLog -e "${ti_bold}$(ti_setaf 1)I'll miss you!${ti_sgr0}"
+        echo -e "${ti_bold}$(ti_setaf 1)I'll miss you!${ti_sgr0}"
     }
     trap _exit EXIT
 }
 
 export TIMEFORMAT=$'\nreal %3R\tuser %3U\tsys %3S\tpcpu %P\n'
 export HISTIGNORE="&:bg:fg:ll:h"
-export HISTTIMEFORMAT="$(consoleLog -e $(ti_setaf 6))[%d/%m %H:%M:%S]$(consoleLog -e ${ti_sgr0}) "
+export HISTTIMEFORMAT="$(echo -e $(ti_setaf 6))[%d/%m %H:%M:%S]$(echo -e ${ti_sgr0}) "
 export HISTCONTROL=ignoredups
 export HOSTFILE=$HOME/.hosts    # Put a list of remote hosts in ~/.hosts
 export PATH=/usr/local/bin:/usr/local/sbin:$PATH:/usr/bin/phpstorm/bin
 
 command_not_found_handle () {
-  consoleLog -e "\e[1;31mI'm sorry, Dave. I'm afraid I can't do that.\n$0: $1: command not found\e[0;0m";
+  echo -e "\e[1;31mI'm sorry, Dave. I'm afraid I can't do that.\n$0: $1: command not found\e[0;0m";
   return 127; #return bash's error code for command not found
 }
 
@@ -170,6 +171,13 @@ export PATH=$PATH:$HOME/.prompt/bin
 # Source other bash files
 source $HOME/.prompt/etc/.bashrc_functions
 source $HOME/.prompt/etc/.bashrc_aliases
+
+#Set the TERM variable
+export TERM=xterm-256color
+
+export logdir=/var/log/dji/forever/
+
+export PATH=$PATH:.
 
 ########################
 # GIT ALIASES

@@ -1,0 +1,9 @@
+#!/usr/bin/env bash
+# chfix
+# Project: .prompt
+# Description:
+# Creator: Justin Doyle <justin@jmdoyle.com>
+# Date: 6/1/2016
+
+find $@ -type d -exec chmod 755 {} +
+find $@ -type f -exec chmod 644 {} +

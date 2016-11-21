@@ -31,4 +31,9 @@ export PATH=/usr/local/aws/bin:$PATH
 complete -C '/usr/local/bin/aws_completer' aws
 
 ## Misc Aliases
-alias ds="du -h --max-depth=1"
+
+
+## Swagger
+alias sp="swagger project"
+alias sps="swagger project start"
+alias spe="swagger project edit"

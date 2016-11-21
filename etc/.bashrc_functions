@@ -53,3 +53,12 @@ function du {
         du -hc -d 1 $@
     fi
 }
+
+function emacs {
+    if [[ $(which emacs) != "" || $(uname) != "Darwin" ]]; then
+        $(which emacs)
+    else
+        open -a emacs
+    fi
+
+}

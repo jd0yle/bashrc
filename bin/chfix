@@ -5,5 +5,11 @@
 # Creator: Justin Doyle <justin@jmdoyle.com>
 # Date: 6/1/2016
 
-find $@ -type d -exec chmod 755 {} +
-find $@ -type f -exec chmod 644 {} +
+DIR=$@
+
+if [[ "$DIR"="" ]]; then
+    DIR="."
+fi
+
+find $DIR -type d -exec chmod 755 {} \;
+find $DIR -type f -exec chmod 644 {} \;

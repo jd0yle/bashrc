@@ -4,9 +4,6 @@
 # Creator: Justin Doyle <justin@jmdoyle.com>
 # Date: 2/9/2013
 
-#########################
-## SET DEFAULT OPTIONS ##
-#########################
 export CLICOLOR=1
 # If not running interactively, don't do anything
 [ -z "$PS1" ] && return
@@ -20,12 +17,32 @@ export CLICOLOR=1
 #    fi
 #}
 
+########################################################################################################################
+## LIQUIDPROMPT
+########################################################################################################################
+source ~/.prompt/liquid/liquidprompt
 
-HISTCONTROL=ignoreboth:erasedups
+########################################################################################################################
+## SHELL AND HISTORY OPTIONS
+########################################################################################################################
+export HISTCONTROL=ignorespaces
+export HISTSIZE=10000
+export HISTFILESIZE=10000
+
+export TIMEFORMAT=$'\nreal %3R\tuser %3U\tsys %3S\tpcpu %P\n'
+export HISTIGNORE="&:bg:fg:ll:h"
+export HISTTIMEFORMAT="$(echo -e $(ti_setaf 6))[%d/%m %H:%M:%S]$(echo -e ${ti_sgr0}) "
+export HOSTFILE=$HOME/.hosts    # Put a list of remote hosts in ~/.hosts
+
+#Set the TERM variable
+# export TERM=xterm-256color
+
 shopt -s histappend
-HISTSIZE=10000
-HISTFILESIZE=10000
 shopt -s checkwinsize
+
+########################################################################################################################
+## SET COLOR PROMPT
+########################################################################################################################
 [ -x /usr/bin/lesspipe ] && eval "$(SHELL=/bin/sh lesspipe)"
 if [ -z "$debian_chroot" ] && [ -r /etc/debian_chroot ]; then
     debian_chroot=$(cat /etc/debian_chroot)
@@ -45,7 +62,6 @@ if [ -n "$force_color_prompt" ]; then
     fi
 fi
 
-
 if [ "$color_prompt" = yes ]; then
     PS1='${debian_chroot:+($debian_chroot)}\[\033[01;32m\]\u@\h\[\033[00m\]:\[\033[01;34m\]\w\[\033[00m\]\$ '
 else
@@ -53,23 +69,6 @@ else
 fi
 unset color_prompt force_color_prompt
 
-# If this is an xterm set the title to user@host:dir
-case "$TERM" in
-xterm*|rxvt*)
-    PS1="\[\e]0;${debian_chroot:+($debian_chroot)}\u@\h: \w\a\]$PS1"
-    ;;
-*)
-    ;;
-esac
-
-# Add an "alert" alias for long running commands.  Use like so:
-#   sleep 10; alert
-alias alert='notify-send --urgency=low -i "$([ $? = 0 ] && echo terminal || echo error)" "$(history|tail -n1|sed -e '\''s/^\s*[0-9]\+\s*//;s/[;&|]\s*alert$//'\'')"'
-
-# Alias definitions.
-if [ -f ~/.bash_aliases ]; then
-    . ~/.bash_aliases
-fi
 # enable color support of ls and also add handy aliases
 if [ -x /usr/bin/dircolors ]; then
     test -r ~/.dircolors && eval "$(dircolors -b ~/.dircolors)" || eval "$(dircolors -b)"
@@ -82,33 +81,35 @@ if [ -x /usr/bin/dircolors ]; then
     alias egrep='egrep --color=auto'
 fi
 
-# some more ls aliases
-alias ll='ls -alF'
-alias la='ls -A'
-alias l='ls -CF'
+# If this is an xterm set the title to user@host:dir
+case "$TERM" in
+xterm*|rxvt*)
+    PS1="\[\e]0;${debian_chroot:+($debian_chroot)}\u@\h: \w\a\]$PS1"
+    ;;
+*)
+    ;;
+esac
 
+# Use existing $HOME/.bash_aliases if they exist (jdoyle aliases are set elsewhere)
+if [ -f ~/.bash_aliases ]; then
+    . ~/.bash_aliases
+fi
+
+
+########################################################################################################################
+## COMPLETION
+########################################################################################################################
 # Explicitly enable bash completion
 if [ -f /etc/bash_completion ] && ! shopt -oq posix; then
     . /etc/bash_completion
 fi
 
-
-CLIENT_IP=$(echo $SSH_CLIENT | grep -o '[0-9]*\.[0-9]*\.[0-9]*\.[0-9]*')
-HOST_IP=$(ifconfig eth1 2>/dev/null | grep -o "inet addr:[0-9]*\.[0-9]*\.[0-9]*\.[0-9]*" | grep -o "[0-9]*\.[0-9]*\.[0-9]*\.[0-9]*" ||
-          ifconfig eth0 2>/dev/null | grep -o "inet addr:[0-9]*\.[0-9]*\.[0-9]*\.[0-9]*" | grep -o "[0-9]*\.[0-9]*\.[0-9]*\.[0-9]*" ||
-          ifconfig en3 2>/dev/null | grep -o "inet [0-9]*\.[0-9]*\.[0-9]*\.[0-9]*" | grep -o "[0-9]*\.[0-9]*\.[0-9]*\.[0-9]*")
-
-
-##########################
-# SOURCE LIQUIDPROMP AND SET MOTD
-##########################
-
-source ~/.prompt/liquid/liquidprompt
-
+########################################################################################################################
+# SET MOTD
+########################################################################################################################
 ALERT=${BOLD_WHITE}${On_Red} # Bold WHITE on red background
 
-function motd()
-{
+function motd {
     ti_sgr0="$( { tput sgr0 || tput me ; } 2>/dev/null )"
     ti_bold="$( { tput bold || tput md ; } 2>/dev/null )"
     ti_setaf
@@ -147,41 +148,44 @@ function motd()
     trap _exit EXIT
 }
 
-export TIMEFORMAT=$'\nreal %3R\tuser %3U\tsys %3S\tpcpu %P\n'
-export HISTIGNORE="&:bg:fg:ll:h"
-export HISTTIMEFORMAT="$(echo -e $(ti_setaf 6))[%d/%m %H:%M:%S]$(echo -e ${ti_sgr0}) "
-export HISTCONTROL=ignoredups
-export HOSTFILE=$HOME/.hosts    # Put a list of remote hosts in ~/.hosts
-export PATH=/usr/local/bin:/usr/local/sbin:$PATH:/usr/bin/phpstorm/bin
+motd
 
+########################################################################################################################
+# ERROR HANDLING
+########################################################################################################################
 command_not_found_handle () {
   echo -e "\e[1;31mI'm sorry, Dave. I'm afraid I can't do that.\n$0: $1: command not found\e[0;0m";
   return 127; #return bash's error code for command not found
 }
 
-motd
+########################################################################################################################
+# PATH MODIFICATIONS
+########################################################################################################################
+# Use pathadd to avoid duplicate entries in $PATH
+pathadd() {
+    if [ -d "$1" ] && [[ ":$PATH:" != *":$1:"* ]]; then
+        PATH="${PATH:+"$PATH:"}$1"
+    fi
+}
 
-
-###################################################################
-################## jdoyle customization ###########################
-###################################################################
 # Add personal script bins to PATH
-export PATH=$PATH:$HOME/.prompt/bin
+pathadd $HOME/.prompt/bin
 
+# git-extra-commands
+pathadd $HOME/.prompt/thirdparty-scripts/git-extra-commands/bin
+
+# Add cwd to path (NOTE: This is potentially dangerous and exploitable. DON'T FUCK IT UP.)
+pathadd .
+
+########################################################################################################################
+# ALIASES AND FUNCTIONS
+########################################################################################################################
 # Source other bash files
 source $HOME/.prompt/etc/.bashrc_functions
 source $HOME/.prompt/etc/.bashrc_aliases
 
-#Set the TERM variable
-export TERM=xterm-256color
 
-export logdir=/var/log/dji/forever/
-
-export PATH=$PATH:.
-
-########################
-# GIT ALIASES
-########################
+# Git aliases (aka; A message from the Council for the Preservation of Keyboards)
 alias g="git"
 alias gco="git checkout"
 alias gcm="git commit"
@@ -208,9 +212,12 @@ if [ -f  ~/.prompt/bin/git-completion.bash ]; then
   __git_complete glg _git_log
 fi
 
+########################################################################################################################
+# INIT STATEMENTS
+########################################################################################################################
 trap on_bash_exit EXIT
 
-# Automatically set DISPLAY and SSH into dev box if we're in cygwin
+# Automatically set DISPLAY and SSH into Virtualbox dev machine if we're in cygwin
 if [[ "$(uname | grep CYGWIN)" != "" ]]; then
     export DISPLAY=:0.0
     ssh jdoyle@192.168.56.140

@@ -71,4 +71,3 @@
         setInterval(output, 500);
     });
 })();
-//oathtool --totp -b "3OBBPQISBSMVAJ34XLGJLJEJG63UH4PHMHKQ6XYORI5UGSQRJF7LOXVBXEGFUKOE"

@@ -130,16 +130,18 @@ function motd {
     MEM_USED=$(free -m | grep Mem | sed -r 's/\s+/ /g' |  cut -d " " -f 3)
     MEM_FREE=$(free -m | grep Mem | sed -r 's/\s+/ /g' |  cut -d " " -f 4)
 
-    DISK_TOTAL=$(df -h | head -n 2 | tail -n 1 | sed -r 's/\s+/ /g' | cut -d " " -f 2)
-    DISK_USED=$(df -h | head -n 2 | tail -n 1 | sed -r 's/\s+/ /g' | cut -d " " -f 3)
-    DISK_FREE=$(df -h | head -n 2 | tail -n 1 | sed -r 's/\s+/ /g' | cut -d " " -f 4)
+    DISK=$(df -h | ack '^/dev\S+\s+(\d+G)\s+(\d+G)\s+(\d+G)\s+(\d+%).*/$' --output '$1 $2 $3 $4')
+    DISK_TOTAL=$(echo $DISK | cut -d " " -f 1)
+    DISK_USED=$(echo $DISK | cut -d " " -f 2)
+    DISK_FREE=$(echo $DISK | cut -d " " -f 3)
+    DISK_PCT=$(echo $DISK | cut -d " " -f 4)
 
     # MOTD and login message
     echo ""
     echo -e "$(ti_setaf 5)Welcome to ${ti_bold}$(ti_setaf 6)$HOSTNAME$(ti_setaf 5) (${ti_sgr0}$(ti_setaf 6)$HOST_IP$(ti_setaf 5)${ti_bold}), $(ti_setaf 6)$USER$(ti_setaf 5) (${ti_sgr0}$(ti_setaf 6)$CLIENT_IP$(ti_setaf 5)${ti_bold}).${ti_sgr0}"
     echo -en "$(ti_setaf 5)Current server time is $(ti_setaf 3)$(date)$(ti_setaf 5).${ti_sgr0}\n"
     echo -en "$(ti_setaf 6)Mem: $(ti_setaf 3)${MEM_USED}m$(ti_setaf 5)/$(ti_setaf 3)${MEM_TOTAL}m $(ti_setaf 5)Used, $(ti_setaf 3)${MEM_FREE}m$(ti_setaf 5) Free. "
-    echo -e "$(ti_setaf 6)Disk: $(ti_setaf 3)${DISK_USED}$(ti_setaf 5)/$(ti_setaf 3)${DISK_TOTAL} $(ti_setaf 5)Used, $(ti_setaf 3)${DISK_FREE}$(ti_setaf 5) Free."
+    echo -e "$(ti_setaf 6)Disk: $(ti_setaf 3)${DISK_USED}$(ti_setaf 5)/$(ti_setaf 3)${DISK_TOTAL} $(ti_setaf 5)($(ti_setaf 3)${DISK_PCT}$(ti_setaf 5)) Used, $(ti_setaf 3)${DISK_FREE}$(ti_setaf 5) Free."
 
     function _exit()              # Function to run upon exit of shell.
     {

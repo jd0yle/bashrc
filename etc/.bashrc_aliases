@@ -32,7 +32,6 @@ complete -C '/usr/local/bin/aws_completer' aws
 
 ## Misc Aliases
 
-
 ## Swagger
 alias sp="swagger project"
 alias sps="swagger project start"

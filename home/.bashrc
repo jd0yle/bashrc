@@ -185,6 +185,7 @@ pathadd .
 # Source other bash files
 source $HOME/.prompt/etc/.bashrc_functions
 source $HOME/.prompt/etc/.bashrc_aliases
+source $HOME/.prompt/etc/npm_completion
 
 
 # Git aliases (aka; A message from the Council for the Preservation of Keyboards)

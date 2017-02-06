@@ -36,3 +36,10 @@ complete -C '/usr/local/bin/aws_completer' aws
 alias sp="swagger project"
 alias sps="swagger project start"
 alias spe="swagger project edit"
+
+## Colors
+alias less="less -R"
+
+## Copy/Paste
+alias xc="xclip -selection c"
+alias xp="xclip -o -selection c"

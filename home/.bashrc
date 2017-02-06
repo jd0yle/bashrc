@@ -187,6 +187,9 @@ source $HOME/.prompt/etc/.bashrc_functions
 source $HOME/.prompt/etc/.bashrc_aliases
 source $HOME/.prompt/etc/npm_completion
 
+# Enable syntax highlight for /usr/bin/less
+export LESSOPEN="| /usr/share/source-highlight/src-hilite-lesspipe.sh %s"
+export LESS=' -R '
 
 # Git aliases (aka; A message from the Council for the Preservation of Keyboards)
 alias g="git"

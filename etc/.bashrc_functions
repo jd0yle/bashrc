@@ -12,6 +12,34 @@ function sshrun(){
 }
 alias ssh=sshrun
 
+function m_sshWrapper(){
+    keyFileName=$1
+    address=$2
+    echo "Syncing .prompt files"
+    rsync -ae "ssh -i $HOME/.ssh/${keyFileName}" --delete ~/.prompt ubuntu@${address}:~/
+    echo "Setting .bashrc"
+    ssh -i $HOME/.ssh/${keyFileName} ubuntu@${address} 'rm -f /home/ubuntu/.bashrc; ln -s /home/ubuntu/.prompt/home/.bashrc /home/ubuntu/.bashrc'
+    echo "Connecting"
+    ssh -i $HOME/.ssh/${keyFileName} ubuntu@${address}
+}
+
+function sshdev(){
+    m_sshWrapper aws-dev-2017-01-04_22-15 $1
+}
+
+function sshqa(){
+    m_sshWrapper aws-qa-2017-01-04_22-15 $1
+}
+
+function sshstage(){
+    m_sshWrapper aws-stage-2017-01-04_22-15 $1
+}
+
+function sshprod(){
+    m_sshWrapper aws-prod-2017-01-04_22-15 $1
+}
+
+
 # TODO Use ~/.ssh/config!
 function sshaws(){
     echo "Syncing .prompt files"

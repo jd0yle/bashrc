@@ -7,6 +7,7 @@
     "aws-sdk": "^2.9.0",
     "chalk": "^1.1.1",
     "commander": "^2.9.0",
+    "minimist": "^1.2.0",
     "moment": "^2.17.1"
   }
 }

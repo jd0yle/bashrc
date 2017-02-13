@@ -26,8 +26,15 @@
 
         process.stdout.clearLine();
         process.stdout.cursorTo(0);
-        process.stdout.write(line)
+        process.stdout.write(line);
         process.stdout.cursorTo(process.stdout.columns);
+
+        exec("echo " + providers["aws"].lastToken + " | xclip -selection c", function (err, stdout) {
+            if (err) {
+                console.error("Problem with xclip");
+            }
+        });
+
     };
 
     var execOathTool = function (provider, callback) {
@@ -67,6 +74,7 @@
                 createIntervals(provider);
             }
         }
+        console.log("Token copied to X clipboard");
         output();
         setInterval(output, 500);
     });

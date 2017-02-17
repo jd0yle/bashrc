@@ -41,5 +41,7 @@ alias spe="swagger project edit"
 alias less="less -R"
 
 ## Copy/Paste
+# 2017-02-13 - Commented out in favor of bin/xc and bin/xc scripts
 alias xc="xclip -selection c"
 alias xp="xclip -o -selection c"
+alias cplast="fc -nl -1 | sed 's/^\s*//g' | xc"

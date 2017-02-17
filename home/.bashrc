@@ -182,10 +182,41 @@ pathadd .
 ########################################################################################################################
 # ALIASES AND FUNCTIONS
 ########################################################################################################################
+# Set global color variables
+COLOR_RESET="\e[0m"
+COLOR_DEFAULT="\e[39m"
+
+COLOR_BOLD="\e[1m"
+COLOR_DIM="\e[2m"
+COLOR_UNDERLINE="\e[4m"
+
+COLOR_BLACK="\e[30m"
+COLOR_RED="\e[31m"
+COLOR_GREEN="\e[32m"
+COLOR_YELLOW="\e[33m"
+COLOR_BLUE="\e[34m"
+COLOR_MAGENTA="\e[35m"
+COLOR_CYAN="\e[36m"
+COLOR_LIGHTGRAY="\e[37m"
+COLOR_WHITE="\e[97m"
+
+COLOR_BGDEFAULT="\e[49m"
+COLOR_BGBLACK="\e[40m"
+COLOR_BGRED="\e[41m"
+COLOR_BGGREEN="\e[42m"
+COLOR_BGYELLOW="\e[43m"
+COLOR_BGBLUE="\e[44m"
+COLOR_BGMAGENTA="\e[45m"
+COLOR_BGCYAN="\e[46m"
+COLOR_BGLIGHTGRAY="\e[47m"
+COLOR_BGWHITE="\e[107m"
+
 # Source other bash files
 source $HOME/.prompt/etc/.bashrc_functions
 source $HOME/.prompt/etc/.bashrc_aliases
 source $HOME/.prompt/etc/npm_completion
+
+source $HOME/.prompt/thirdparty-scripts/mysql-colorize/mysql-colorize.bash
 
 # Enable syntax highlight for /usr/bin/less
 export LESSOPEN="| /usr/share/source-highlight/src-hilite-lesspipe.sh %s"

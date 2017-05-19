@@ -1,0 +1,21 @@
+#!/usr/bin/env node
+/**
+ * jdate.js
+ * Project: .prompt
+ * Creator: Justin Doyle <jdoyle@donjohnston.com>
+ * Date: 2/13/17
+ */
+(function () {
+    "use strict";
+    let moment = require("moment"),
+        argv = require("minimist")(process.argv.slice(2));
+
+    let format = "YYYY-MM-DD_HH-mm";
+    
+    if (argv.u !== undefined) {
+        process.stdout.write(moment().utc().format(format));
+    } else {
+        process.stdout.write(moment().format(format));
+    }
+
+})();

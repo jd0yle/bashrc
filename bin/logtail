@@ -1,0 +1,10 @@
+#!/usr/bin/env bash
+
+APP=$1
+
+if [[ "$APP" = "" ]]; then
+    echo "Usage: $(basename "$0") <appName>"
+    exit -1
+fi
+
+tail -f /var/log/dji/$APP/$APP.log | bunyan

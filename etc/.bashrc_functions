@@ -88,8 +88,9 @@ function du {
 
 function cdls {
     if cd $@; then
-        echo -e "\t${COLOR_CYAN}$(pwd)$COLOR_RESET"
+        echo -e "\t${COLOR_MAGENTA}$(pwd)$COLOR_RESET"
         ls
+        echo ""
     fi
 }
 alias cd="cdls"

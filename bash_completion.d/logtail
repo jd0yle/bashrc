@@ -1,0 +1,13 @@
+_logtail()
+{
+    local cur prev opts
+    COMPREPLY=()
+    cur="${COMP_WORDS[COMP_CWORD]}"
+    prev="${COMP_WORDS[COMP_CWORD-1]}"
+    opts=$(ls /var/log/dji/)
+
+    COMPREPLY=( $(compgen -W "${opts}" -- ${cur}) )
+    return 0
+
+}
+complete -F _logtail logtail

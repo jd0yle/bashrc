@@ -11,6 +11,7 @@ currbranch=`git branch | grep "\*" | sed -r 's/.*\* (\S+)/\1/g'`
 remotes=`git branch -r | grep -v ">" | sed 's/origin\///g'`
 locals=`git branch -l`
 
+# For any remote branches that don't exist locally, create them locally
 for remote in `git branch -r | grep -v ">" | sed 's/origin\///g'`
 do
     if [[ `echo $locals | grep "$remote"` == "" ]]; then
@@ -19,12 +20,15 @@ do
     fi
 done
 
+# Get the changes from the remote for each local branch
 branches=`git for-each-ref --format="%(refname:short) %(upstream:track)" refs/heads | grep -oP "^.*\[.*"  | sed 's/\[.*\]//g'`
 for branch in ${branches}
 do
     echo -e " * Getting remote changes for $branch"
     git checkout $branch &> /dev/null
-    git pull --ff-only
+    git pull --ff-only || true
 done
 
 git checkout $currbranch &> /dev/null
+
+echo "Done!"

@@ -24,6 +24,10 @@ function m_sshWrapper(){
     ssh -i $HOME/.ssh/${keyFileName} ubuntu@${address}
 }
 
+function sshaws(){
+    m_sshWrapper default-user@all-ec2 $1
+}
+
 function sshdev(){
     m_sshWrapper aws-dev-2017-01-04_22-15 $1
 }
@@ -38,17 +42,6 @@ function sshstage(){
 
 function sshprod(){
     m_sshWrapper aws-prod-2017-01-04_22-15 $1
-}
-
-
-# TODO Use ~/.ssh/config!
-function sshaws(){
-    echo "Syncing .prompt files"
-    rsync -ae "ssh -i $HOME/.ssh/default-user@all-ec2" --delete ~/.prompt ubuntu@$1:~/
-    echo "Setting .bashrc"
-    ssh -i $HOME/.ssh/default-user@all-ec2 ubuntu@$1 'rm -f /home/ubuntu/.bashrc; ln -s /home/ubuntu/.prompt/home/.bashrc /home/ubuntu/.bashrc'
-    echo "Connecting"
-    ssh -i $HOME/.ssh/default-user@all-ec2 ubuntu@$1
 }
 
 #####################################

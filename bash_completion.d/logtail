@@ -4,7 +4,7 @@ _logtail()
     COMPREPLY=()
     cur="${COMP_WORDS[COMP_CWORD]}"
     prev="${COMP_WORDS[COMP_CWORD-1]}"
-    opts=$(ls /var/log/dji/)
+    opts=$(ls /var/log/dji/ | sed 's#/##g')
 
     COMPREPLY=( $(compgen -W "${opts}" -- ${cur}) )
     return 0

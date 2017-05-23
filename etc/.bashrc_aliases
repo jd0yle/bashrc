@@ -4,29 +4,6 @@
 # Creator: Justin Doyle <justin@jmdoyle.com>
 # Date: 12/16/2015
 
-## Native Client Build
-export NACL_SDK_ROOT=/var/www/native_client/nacl_sdk/pepper_26
-export NACLVERBOSITY=1
-export NACL_PLUGIN_DEBUG=1
-export NACL_DEBUG_ENABLE=1
-export PPAPI_BROWSER_DEBUG=1
-export NACL_SRPC_DEBUG=255
-
-## MySQL
-export PATH=$PATH:/opt/local/lib/mysql55/bin
-export PATH=$PATH:/opt/local/bin:/opt/local/sbin:/usr/bin:/bin:/usr/sbin:/sbin:/usr/local/bin:/usr/local/git/bin:/usr/bin/phpstorm/bin:/opt/local/lib/mysql55/bin
-
-## Android
-export PATH=$PATH:/Users/jdoyle/android-sdk/tools
-export ANDROID_HOME=$HOME/android-sdk
-
-## Hashicorp
-export PATH=$PATH:/usr/local/bin/terraform/
-export PATH=$PATH:/home/jdoyle/packer
-
-## AWS
-export PATH=/usr/local/aws/bin:$PATH
-
 ## AWS Command Completion
 complete -C '/usr/local/bin/aws_completer' aws
 
@@ -41,7 +18,6 @@ alias spe="swagger project edit"
 alias less="less -R"
 
 ## Copy/Paste
-# 2017-02-13 - Commented out in favor of bin/xc and bin/xc scripts
 alias xc="xclip -selection c"
 alias xp="xclip -o -selection c"
 alias cplast="fc -nl -1 | sed 's/^\s*//g' | xc"

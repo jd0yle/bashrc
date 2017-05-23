@@ -252,6 +252,10 @@ fi
 ########################################################################################################################
 # INIT STATEMENTS
 ########################################################################################################################
+function on_bash_exit(){
+    echo -e "${COLOR_BOLD}${COLOR_RED}Always have an escape plan.${COLOR_RESET}"
+}
+
 trap on_bash_exit EXIT
 
 # Automatically set DISPLAY and SSH into Virtualbox dev machine if we're in cygwin

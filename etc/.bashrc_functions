@@ -71,7 +71,7 @@ function gclone(){
     git clone git@bitbucket.org:$team/$repo.git
 }
 
-function du {
+function duOLDWTFWASITHINKING {
     if [[ `uname` != "Darwin" ]]; then
         du -h --max-depth=1 $@
     else

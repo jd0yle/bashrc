@@ -1,0 +1,8 @@
+#!/usr/bin/env bash
+
+command="du -h --max-depth=1 $@"
+
+echo -e "${COLOR_BOLD}${COLOR_MAGENTA}${command}${COLOR_RESET}\n"
+
+$command | sort -h
+

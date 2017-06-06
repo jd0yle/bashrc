@@ -1,0 +1,20 @@
+#!/usr/bin/env bash
+
+bgColors=$(printenv | ack '^(COLOR_BG\S+)=' --output='$1' | ack -v 'COLOR_BGDEFAULT' | sort)
+bgColors=$(echo -e "COLOR_BGDEFAULT\n${bgColors}")
+
+fgColors=$(printenv | ack '^(COLOR_\S+)=' --output='$1' | ack -v 'COLOR_BG|COLOR_RESET|COLOR_BOLD|COLOR_DIM|COLOR_UNDERLINE' | sort)
+fgColors=$(echo -e "COLOR_DEFAULT\n${fgColors}")
+
+for bgColor in $bgColors; do
+    bgColorCode=$(eval echo -e \$${bgColor})
+    echo -e "\n"
+    echo -e "${bgColor}"
+    for fgColor in $fgColors; do
+        fgColorCode=$(eval echo -e \$${fgColor})
+        output="\${${bgColor}}\${${fgColor}}" ## EXAMPLE: ${COLOR_BGYELLOW}${COLOR_BLACK}
+        echo -e "${bgColorCode}${fgColorCode}${output}${COLOR_RESET}"
+
+    done
+done
+

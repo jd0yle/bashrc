@@ -21,3 +21,6 @@ alias less="less -R"
 alias xc="xclip -selection c"
 alias xp="xclip -o -selection c"
 alias cplast="fc -nl -1 | sed 's/^\s*//g' | xc"
+
+## PHPStorm
+alias phpstorm="$HOME/phpstorm/bin/phpstorm.sh"

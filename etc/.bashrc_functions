@@ -80,7 +80,7 @@ function duOLDWTFWASITHINKING {
 }
 
 function cdls {
-    if cd $@; then
+    if cd "$@"; then
         echo -e "\t${COLOR_MAGENTA}$(pwd)$COLOR_RESET"
         ls
         echo ""

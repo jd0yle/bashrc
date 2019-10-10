@@ -1,24 +1,24 @@
 #!/usr/bin/env node
 (function () {
     "use strict";
-    var exec = require("child_process").exec,
+    let exec = require("child_process").exec,
         providers = require("../etc/credentials/mfa.json");
 
-    var getTimeLeft = function() {
-        var sec = parseInt(new Date().getSeconds(), 10),
+    let getTimeLeft = function() {
+        let sec = parseInt(new Date().getSeconds(), 10),
             timeLeft = Math.abs(sec - (Math.floor(((sec / 30)) + 1) * 30));
         return timeLeft;
     };
 
-    var output = function () {
-        var timeLeft = getTimeLeft(),
+    let output = function () {
+        let timeLeft = getTimeLeft(),
             line = " " + timeLeft + " ";
 
         if (timeLeft.toString().length < 2){
             line = " " + line;
         }
 
-        for (var provider in providers) {
+        for (let provider in providers) {
             if (providers.hasOwnProperty(provider)) {
                 line += "  *  " + provider + ": " + providers[provider].lastToken;
             }
@@ -37,7 +37,7 @@
 
     };
 
-    var execOathTool = function (provider, callback) {
+    let execOathTool = function (provider, callback) {
         callback = typeof callback === "function" ? callback : function () {};
         exec("oathtool --totp -b '" + providers[provider].secret + "'", function (err, stdout) {
             if (err) {
@@ -47,21 +47,25 @@
         });
     };
 
-    var saveToken = function (provider, token) {
+    let saveToken = function (provider, token) {
         if (token !== providers[provider].lastToken) {
             providers[provider].lastToken = token;
         }
     };
 
-    var getToken = function (provider) {
+    let getToken = function (provider) {
         execOathTool(provider, saveToken);
     };
 
-    var createIntervals = function (provider) {
+    let createIntervals = function (provider) {
         getToken(provider);
         setInterval(function () {
             getToken(provider);
         }, 1000);
+    };
+
+    let exit = function () {
+        process.nextTick(process.exit);
     };
 
    // exec("sudo ntpdate ntp.ubuntu.com", function (err) {
@@ -69,13 +73,14 @@
         if (err) {
             throw(err);
         }
-        for (var provider in providers) {
-            if (providers.hasOwnProperty(provider)) {
-                createIntervals(provider);
-            }
-        }
+
+        Object.keys(providers).forEach(function (provider) {
+            createIntervals(provider);
+        });
+
         console.log("Token copied to X clipboard");
         output();
         setInterval(output, 500);
+        setTimeout(exit, 60 * 1000);
     });
 })();

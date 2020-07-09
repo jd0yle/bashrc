@@ -1,8 +1,12 @@
-# .bashrc
+# .prompt
 # Project: .prompt
-# Description: ...? Its a .bashrc file... http://lmgtfy.com/?q=.bashrc
+# Description: A collection of bashrc settings, utility functions/scripts, and QOL enhancements via .bashrc
 # Creator: Justin Doyle <justin@jmdoyle.com>
 # Date: 2/9/2013
+# USAGE:
+#    1) Move the 'prompt' directory (the root dir of this project) to $HOME/.prompt
+#    2) From your $HOME directory, run '> .prompt/install.sh'
+#    3) Restart your shell sessions, or do '> source ~.bashrc'
 
 export CLICOLOR=1
 # If not running interactively, don't do anything
@@ -219,7 +223,9 @@ export COLOR_BGCYAN="\e[46m"
 export COLOR_BGLIGHTGRAY="\e[47m"
 export COLOR_BGWHITE="\e[107m"
 
-# Source other bash files
+########################################################################################################################
+# SOURCE EXTRA BASH FILES
+########################################################################################################################
 source $HOME/.prompt/etc/.bashrc_functions
 source $HOME/.prompt/etc/.bashrc_aliases
 source $HOME/.prompt/etc/npm_completion
@@ -235,6 +241,9 @@ pathadd ~/.npm-global/bin
 # AWS CLI BIN
 pathadd ~/.local/bin
 
+########################################################################################################################
+# GIT CONFIG, ALIASES, AND COMPLETION
+########################################################################################################################
 # Git aliases (aka; A message from the Council for the Preservation of Keyboards)
 alias g="git"
 alias gco="git checkout"

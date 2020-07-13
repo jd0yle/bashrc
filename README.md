@@ -1,9 +1,6 @@
 # Prompt
-
 ##### A collection of bashrc settings, utility functions/scripts, and QOL enhancements, and third-party tools (ex: LiquidPrompt) via .bashrc
-
 ##### Structure
-
 - `home/.bashrc` is the entry point (once `setup-host.sh` has been run).  
 - `home/` contains all of the files that will be moved to `$HOME` or symlinked from `$HOME`  
 - `etc/` contains bashrc_aliases and bashrc_functions sourced by .bashrc
@@ -13,8 +10,9 @@
 - `etc/credentials/` files don't get stored in this repository; use this directory for things like your aws-cli credentials and such
 
 `setup-host.sh` creates a symlink from `$HOME/.bashrc` to `~/.prompt/home/.bashrc`
-### Install 
-#####Installation 
+
+## Install 
+##### Installation 
 - Clone this project to your local machine
 - Move the 'prompt' directory (the root dir of this project) to $HOME/.prompt
 - In your shell, `cd` to your $HOME directory, run `sh prompt/setup-host.sh`
@@ -29,6 +27,6 @@ The `.setup-host` script _should_ preserve your original .bashrc file, but I wou
 - .emacs
 - .emacs.d/
  
-###Features
+### Features
 - liquidprompt (heavily customized)
 - utility scripts found in `~/.prompt/bin`

@@ -236,7 +236,20 @@ source $HOME/.prompt/etc/npm_completion
 
 # NPM GLOBAL INSTALL LOCATION
 NPM_CONFIG_PREFIX=~/.npm-global
+NPM_PACKAGES="${HOME}/.npm-packages"
 pathadd ~/.npm-global/bin
+NODE_PATH="$NPM_PACKAGES/lib/node_modules:$NODE_PATH"
+
+# PYTHON
+pathadd $HOME/.pyenv/bin
+
+export PYENV_ROOT="$HOME/.pyenv"
+export PATH="$PYENV_ROOT/bin:$PATH"
+if command -v pyenv 1>/dev/null 2>&1; then
+  eval "$(pyenv init -)"
+fi
+
+
 
 # AWS CLI BIN
 pathadd ~/.local/bin

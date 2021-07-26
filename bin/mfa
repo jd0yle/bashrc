@@ -29,7 +29,8 @@
         process.stdout.write(line);
         process.stdout.cursorTo(process.stdout.columns);
 
-        exec("echo " + providers["aws"].lastToken + " | xclip -selection c", function (err, stdout) {
+        //exec("echo " + providers["aws"].lastToken + " | xclip -selection c", function (err, stdout) {
+	exec("echo " + providers["aws"].lastToken + " | clip.exe", function (err, stdout) {
             if (err) {
                 console.error("Problem with xclip");
             }

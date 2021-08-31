@@ -1,8 +1,12 @@
-# .bashrc
+# .prompt
 # Project: .prompt
-# Description: ...? Its a .bashrc file... http://lmgtfy.com/?q=.bashrc
+# Description: A collection of bashrc settings, utility functions/scripts, and QOL enhancements via .bashrc
 # Creator: Justin Doyle <justin@jmdoyle.com>
 # Date: 2/9/2013
+# USAGE:
+#    1) Move the 'prompt' directory (the root dir of this project) to $HOME/.prompt
+#    2) From your $HOME directory, run '> .prompt/install.sh'
+#    3) Restart your shell sessions, or do '> source ~.bashrc'
 
 export CLICOLOR=1
 # If not running interactively, don't do anything
@@ -219,12 +223,12 @@ export COLOR_BGCYAN="\e[46m"
 export COLOR_BGLIGHTGRAY="\e[47m"
 export COLOR_BGWHITE="\e[107m"
 
-# Source other bash files
+########################################################################################################################
+# SOURCE EXTRA BASH FILES
+########################################################################################################################
 source $HOME/.prompt/etc/.bashrc_functions
 source $HOME/.prompt/etc/.bashrc_aliases
 source $HOME/.prompt/etc/npm_completion
-
-source $HOME/.prompt/thirdparty-scripts/mysql-colorize/mysql-colorize.bash
 
 # Enable syntax highlight for /usr/bin/less
 #export LESSOPEN="| /usr/share/source-highlight/src-hilite-lesspipe.sh %s"
@@ -232,11 +236,27 @@ source $HOME/.prompt/thirdparty-scripts/mysql-colorize/mysql-colorize.bash
 
 # NPM GLOBAL INSTALL LOCATION
 NPM_CONFIG_PREFIX=~/.npm-global
+NPM_PACKAGES="${HOME}/.npm-packages"
 pathadd ~/.npm-global/bin
+NODE_PATH="$NPM_PACKAGES/lib/node_modules:$NODE_PATH"
+
+# PYTHON
+pathadd $HOME/.pyenv/bin
+
+export PYENV_ROOT="$HOME/.pyenv"
+export PATH="$PYENV_ROOT/bin:$PATH"
+if command -v pyenv 1>/dev/null 2>&1; then
+  eval "$(pyenv init -)"
+fi
+
+
 
 # AWS CLI BIN
 pathadd ~/.local/bin
 
+########################################################################################################################
+# GIT CONFIG, ALIASES, AND COMPLETION
+########################################################################################################################
 # Git aliases (aka; A message from the Council for the Preservation of Keyboards)
 alias g="git"
 alias gco="git checkout"

@@ -1,4 +1,4 @@
-# TODO Use ~/.ssh/config!
+
 ## SSH
 function sshrun(){
     if [ "$2" != "" ]
@@ -11,7 +11,8 @@ function sshrun(){
         ssh -Y -t $1 "bash --rcfile ~/.prompt/home/.bashrc"
     fi
 }
-alias ssh=sshrun
+## IF YOU WANT TO AUTOMATICALLY BRING ~/.prompt WITH YOU WHEN YOU SSH, UNCOMMENT THIS:
+#alias ssh=sshrun
 
 function m_sshWrapper(){
     keyFileName=$1
@@ -24,35 +25,12 @@ function m_sshWrapper(){
     ssh -i $HOME/.ssh/${keyFileName} ubuntu@${address}
 }
 
-function sshaws(){
-    m_sshWrapper default-user@all-ec2 $1
-}
-
-function sshdev(){
-    m_sshWrapper aws-dev-2017-01-04_22-15 $1
-}
-
-function sshqa(){
-    m_sshWrapper aws-qa-2017-01-04_22-15 $1
-}
-
-function sshstage(){
-    m_sshWrapper aws-stage-2017-01-04_22-15 $1
-}
-
-function sshprod(){
-    m_sshWrapper aws-prod-2017-01-04_22-15 $1
-}
 
 #####################################
 ## Misc. Utilities
 #####################################
 
-function dapi(){
-    command="$@"
-    sudo su dapi -c "$command"
-}
-
+# rsync wrapper
 function rs(){
     if [[ `uname` != "Darwin" ]]; then
         rsync -haz --info=progress2 $@
@@ -79,6 +57,7 @@ function duOLDWTFWASITHINKING {
     fi
 }
 
+# Automatically `ls` when you `cd`
 function cdls {
     if cd "$@"; then
         echo -e "\t${COLOR_MAGENTA}$(pwd)$COLOR_RESET"
@@ -87,76 +66,3 @@ function cdls {
     fi
 }
 alias cd="cdls"
-
-
-#function ctest {
-#    local COLOR_RESET="\e[0m"
-#    local COLOR_DEFAULT="\e[39m"
-#
-#    local COLOR_BOLD="\e[1m"
-#    local COLOR_DIM="\e[2m"
-#    local COLOR_UNDERLINE="\e[4m"
-#
-#    local COLOR_BLACK="\e[30m"
-#    local COLOR_RED="\e[31m"
-#    local COLOR_GREEN="\e[32m"
-#    local COLOR_YELLOW="\e[33m"
-#    local COLOR_BLUE="\e[34m"
-#    local COLOR_MAGENTA="\e[35m"
-#    local COLOR_CYAN="\e[36m"
-#    local COLOR_LIGHTGRAY="\e[37m"
-#    local COLOR_WHITE="\e[97m"
-#
-#    local COLOR_BGDEFAULT="\e[49m"
-#    local COLOR_BGBLACK="\e[40m"
-#    local COLOR_BGRED="\e[41m"
-#    local COLOR_BGGREEN="\e[42m"
-#    local COLOR_BGYELLOW="\e[43m"
-#    local COLOR_BGBLUE="\e[44m"
-#    local COLOR_BGMAGENTA="\e[45m"
-#    local COLOR_BGCYAN="\e[46m"
-#    local COLOR_BGLIGHTGRAY="\e[47m"
-#    local COLOR_BGWHITE="\e[107m"
-#
-#
-#
-##    echo -e "${COLOR_RESET}foobar"
-##    echo -e "${COLOR_DEFAULT}foobar"
-##    echo -e "${COLOR_BLACK}foobar"
-##
-##    #Foregrounds and Bold
-##    echo -e "${COLOR_RED}foobar${COLOR_RESET}"
-##    echo -e "${COLOR_BOLD}${COLOR_RED}foobar${COLOR_RESET}"
-##
-##    echo -e "${COLOR_GREEN}foobar${COLOR_RESET}"
-##    echo -e "${COLOR_BOLD}${COLOR_GREEN}foobar${COLOR_RESET}"
-##
-##    echo -e "${COLOR_YELLOW}foobar${COLOR_RESET}"
-##    echo -e "${COLOR_BOLD}${COLOR_YELLOW}foobar${COLOR_RESET}"
-##
-##    echo -e "${COLOR_BLUE}foobar${COLOR_RESET}"
-##    echo -e "${COLOR_BOLD}${COLOR_BLUE}foobar${COLOR_RESET}"
-##
-##    echo -e "${COLOR_MAGENTA}foobar${COLOR_RESET}"
-##    echo -e "${COLOR_BOLD}${COLOR_MAGENTA}foobar${COLOR_RESET}"
-##
-##    echo -e "${COLOR_CYAN}foobar${COLOR_RESET}"
-##    echo -e "${COLOR_BOLD}${COLOR_CYAN}foobar${COLOR_RESET}"
-##
-##    echo -e "${COLOR_LIGHTGRAY}foobar${COLOR_RESET}"
-##    echo -e "${COLOR_BOLD}${COLOR_LIGHTGRAY}foobar${COLOR_RESET}"
-##
-##    echo -e "${COLOR_WHITE}foobar${COLOR_RESET}"
-##    echo -e "${COLOR_BOLD}${COLOR_WHITE}foobar${COLOR_RESET}"
-##
-##    # Backgrounds
-##    echo -e "${COLOR_BGRED}foobar${COLOR_RESET}"
-##    echo -e "${COLOR_BGGREEN}foobar${COLOR_RESET}"
-##    echo -e "${COLOR_BGYELLOW}foobar${COLOR_RESET}"
-##    echo -e "${COLOR_BGBLUE}foobar${COLOR_RESET}"
-##    echo -e "${COLOR_BGMAGENTA}foobar${COLOR_RESET}"
-##    echo -e "${COLOR_BGCYAN}foobar${COLOR_RESET}"
-##    echo -e "${COLOR_BGLIGHTGRAY}foobar${COLOR_RESET}"
-##    echo -e "${COLOR_BGWHITE}foobar${COLOR_RESET}"
-#
-#}

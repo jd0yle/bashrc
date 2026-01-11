@@ -238,6 +238,7 @@ source $HOME/.prompt/etc/npm_completion
 NPM_CONFIG_PREFIX=~/.npm-global
 NPM_PACKAGES="${HOME}/.npm-packages"
 pathadd ~/.npm-global/bin
+pathadd ~/.npm-packages/bin
 NODE_PATH="$NPM_PACKAGES/lib/node_modules:$NODE_PATH"
 
 # PYTHON
@@ -264,9 +265,35 @@ alias gcm="git commit"
 alias gbr="git branch"
 alias gmg="git merge"
 alias gpl="git pull"
-alias gps="git push"
+#alias gps="git push"
 alias gcp="git cherry-pick"
 alias glg="git log"
+
+# More robust git push that handles when the remote doesn't have a branch matching the local
+gps() {
+  # If you pass args, don't change git's semantics—just forward them.
+  if (( $# )); then
+    git push "$@"
+    return
+  fi
+
+  # Determine current branch (empty if detached HEAD)
+  local branch
+  branch="$(git branch --show-current 2>/dev/null)"
+  if [[ -z "$branch" ]]; then
+    echo "gps: not on a branch (detached HEAD). Use: git push -u origin <branch>" >&2
+    return 1
+  fi
+
+  # Upstream exists?
+  if git rev-parse --abbrev-ref --symbolic-full-name "@{u}" >/dev/null 2>&1; then
+    #git push
+    git push "$@"
+  else
+    git push -u origin "$branch"
+  fi
+}
+
 
 # Git branch bash completion
 if [ -f  ~/.prompt/bin/git-completion.bash ]; then
@@ -304,3 +331,7 @@ PERL5LIB="/home/jdoyle/perl5/lib/perl5${PERL5LIB:+:${PERL5LIB}}"; export PERL5LI
 PERL_LOCAL_LIB_ROOT="/home/jdoyle/perl5${PERL_LOCAL_LIB_ROOT:+:${PERL_LOCAL_LIB_ROOT}}"; export PERL_LOCAL_LIB_ROOT;
 PERL_MB_OPT="--install_base \"/home/jdoyle/perl5\""; export PERL_MB_OPT;
 PERL_MM_OPT="INSTALL_BASE=/home/jdoyle/perl5"; export PERL_MM_OPT;
+
+export NVM_DIR="$HOME/.nvm"
+[ -s "$NVM_DIR/nvm.sh" ] && \. "$NVM_DIR/nvm.sh"  # This loads nvm
+[ -s "$NVM_DIR/bash_completion" ] && \. "$NVM_DIR/bash_completion"  # This loads nvm bash_completion
